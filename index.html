@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Flores Amarillas Para Ti</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@600&family=Playfair+Display:ital,wght@0,500;0,700;1,400&family=Quicksand:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body class="relative flex flex-col justify-between items-center min-h-screen px-4 py-6 sm:p-8">
+
+  <canvas id="rainCanvas" class="fixed inset-0 w-full h-full pointer-events-none z-10"></canvas>
+
+  <div class="scene-decoration" aria-hidden="true">
+    <span class="sun-disc"></span>
+    <span class="scene-sparkle sparkle-one">✦</span>
+    <span class="scene-sparkle sparkle-two">✧</span>
+    <span class="scene-sparkle sparkle-three">✦</span>
+    <span class="scene-leaf leaf-left">❧</span>
+    <span class="scene-leaf leaf-right">❧</span>
+  </div>
+
+  <header class="w-full max-w-4xl flex items-center justify-between z-20 mb-2">
+    <div class="flex items-center gap-2">
+      <span class="w-3 h-3 rounded-full bg-amber-400 animate-ping"></span>
+      <span class="text-xs sm:text-sm font-medium tracking-wider text-amber-900/80 uppercase">Septiembre Eterno</span>
+    </div>
+    <div class="flex items-center gap-2">
+      <button id="soundToggleBtn" class="flex items-center gap-2 px-3 py-1.5 text-xs sm:text-sm font-medium rounded-full bg-white/70 hover:bg-white border border-amber-200 text-amber-800 backdrop-blur shadow-sm transition">
+        <svg id="soundIconOn" class="w-4 h-4 text-amber-600 hidden" fill="currentColor" viewBox="0 0 20 20">
+          <path d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.707.707L4.586 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.586l3.707-3.707a1 1 0 011.09-.217zM14.657 2.929a1 1 0 011.414 0A9.972 9.972 0 0119 10a9.972 9.972 0 01-2.929 7.071 1 1 0 01-1.414-1.414A7.971 7.971 0 0017 10c0-2.21-.894-4.208-2.343-5.657a1 1 0 010-1.414zm-2.829 2.828a1 1 0 011.415 0A5.983 5.983 0 0115 10a5.984 5.984 0 01-1.757 4.243 1 1 0 01-1.415-1.415A3.984 3.984 0 0013 10a3.983 3.983 0 00-1.172-2.828 1 1 0 010-1.415z"/>
+        </svg>
+        <svg id="soundIconOff" class="w-4 h-4 text-amber-600" fill="currentColor" viewBox="0 0 20 20">
+          <path d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.707.707L4.586 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.586l3.707-3.707a1 1 0 011.09-.217zM12.293 7.293a1 1 0 011.414 0L15 8.586l1.293-1.293a1 1 0 111.414 1.414L16.414 10l1.293 1.293a1 1 0 01-1.414 1.414L15 11.414l-1.293 1.293a1 1 0 01-1.414-1.414L13.586 10l-1.293-1.293a1 1 0 010-1.414z"/>
+        </svg>
+        <span id="soundLabel">Melodía: Desactivada</span>
+      </button>
+    </div>
+  </header>
+
+  <main class="relative z-20 flex flex-col items-center w-full max-w-xl text-center my-auto">
+    <div class="mb-3 space-y-1">
+      <span class="text-xs uppercase tracking-widest text-amber-600 font-semibold">Un detalle con todo el cariño</span>
+      <h1 class="text-3xl sm:text-5xl font-bold font-serif-title text-amber-950 tracking-tight leading-tight">
+        Flores Amarillas
+      </h1>
+      <p class="text-sm sm:text-base text-amber-800/80 font-normal">
+        Para iluminar tus días con alegría, promesas y ternura.
+      </p>
+    </div>
+
+    <div class="relative w-80 h-96 sm:w-[26rem] sm:h-[26rem] flex items-center justify-center bouquet-container swaying-anim bouquet-closed" id="bouquetElement">
+      <div class="absolute w-60 h-60 sm:w-72 sm:h-72 rounded-full bg-amber-200/40 blur-3xl -z-10"></div>
+
+      <svg viewBox="0 0 400 480" class="w-full h-full overflow-visible drop-shadow-xl" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <linearGradient id="petalGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" stop-color="#fff59d" />
+            <stop offset="25%" stop-color="#fdd835" />
+            <stop offset="75%" stop-color="#fbc02d" />
+            <stop offset="100%" stop-color="#f57f17" />
+          </linearGradient>
+
+          <radialGradient id="centerGrad" cx="35%" cy="35%" r="65%">
+            <stop offset="0%" stop-color="#795548" />
+            <stop offset="50%" stop-color="#4e342e" />
+            <stop offset="90%" stop-color="#27140f" />
+            <stop offset="100%" stop-color="#1b0000" />
+          </radialGradient>
+
+          <linearGradient id="stemGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" stop-color="#689f38" />
+            <stop offset="50%" stop-color="#7cb342" />
+            <stop offset="100%" stop-color="#558b2f" />
+          </linearGradient>
+
+          <linearGradient id="wrapGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#fffde7" />
+            <stop offset="40%" stop-color="#fff59d" />
+            <stop offset="100%" stop-color="#ffe082" />
+          </linearGradient>
+
+          <g id="flowerHead">
+            <path d="M-28,-14 C-42,-35 -14,-40 -5,-22 Z" fill="#689f38" opacity="0.9" />
+            <path d="M18,-16 C38,-30 40,-8 22,-4 Z" fill="#558b2f" opacity="0.9" />
+            <path d="M-22,14 C-35,32 -8,38 -4,20 Z" fill="#558b2f" opacity="0.8" />
+            <path d="M15,18 C30,32 38,10 20,6 Z" fill="#689f38" opacity="0.8" />
+
+            <g class="flower-core-blossom">
+              <ellipse cx="0" cy="-33" rx="8" ry="23" fill="url(#petalGrad)" />
+              <ellipse cx="0" cy="-33" rx="8" ry="23" fill="url(#petalGrad)" transform="rotate(22.5)" />
+              <ellipse cx="0" cy="-33" rx="8" ry="23" fill="url(#petalGrad)" transform="rotate(45)" />
+              <ellipse cx="0" cy="-33" rx="8" ry="23" fill="url(#petalGrad)" transform="rotate(67.5)" />
+              <ellipse cx="0" cy="-33" rx="8" ry="23" fill="url(#petalGrad)" transform="rotate(90)" />
+              <ellipse cx="0" cy="-33" rx="8" ry="23" fill="url(#petalGrad)" transform="rotate(112.5)" />
+              <ellipse cx="0" cy="-33" rx="8" ry="23" fill="url(#petalGrad)" transform="rotate(135)" />
+              <ellipse cx="0" cy="-33" rx="8" ry="23" fill="url(#petalGrad)" transform="rotate(157.5)" />
+              <ellipse cx="0" cy="-33" rx="8" ry="23" fill="url(#petalGrad)" transform="rotate(180)" />
+              <ellipse cx="0" cy="-33" rx="8" ry="23" fill="url(#petalGrad)" transform="rotate(202.5)" />
+              <ellipse cx="0" cy="-33" rx="8" ry="23" fill="url(#petalGrad)" transform="rotate(225)" />
+              <ellipse cx="0" cy="-33" rx="8" ry="23" fill="url(#petalGrad)" transform="rotate(247.5)" />
+              <ellipse cx="0" cy="-33" rx="8" ry="23" fill="url(#petalGrad)" transform="rotate(270)" />
+              <ellipse cx="0" cy="-33" rx="8" ry="23" fill="url(#petalGrad)" transform="rotate(292.5)" />
+              <ellipse cx="0" cy="-33" rx="8" ry="23" fill="url(#petalGrad)" transform="rotate(315)" />
+              <ellipse cx="0" cy="-33" rx="8" ry="23" fill="url(#petalGrad)" transform="rotate(337.5)" />
+
+              <ellipse cx="0" cy="-24" rx="6" ry="17" fill="#fbc02d" opacity="0.9" transform="rotate(11.25)" />
+              <ellipse cx="0" cy="-24" rx="6" ry="17" fill="#fbc02d" opacity="0.9" transform="rotate(56.25)" />
+              <ellipse cx="0" cy="-24" rx="6" ry="17" fill="#fbc02d" opacity="0.9" transform="rotate(101.25)" />
+              <ellipse cx="0" cy="-24" rx="6" ry="17" fill="#fbc02d" opacity="0.9" transform="rotate(146.25)" />
+              <ellipse cx="0" cy="-24" rx="6" ry="17" fill="#fbc02d" opacity="0.9" transform="rotate(191.25)" />
+              <ellipse cx="0" cy="-24" rx="6" ry="17" fill="#fbc02d" opacity="0.9" transform="rotate(236.25)" />
+              <ellipse cx="0" cy="-24" rx="6" ry="17" fill="#fbc02d" opacity="0.9" transform="rotate(281.25)" />
+              <ellipse cx="0" cy="-24" rx="6" ry="17" fill="#fbc02d" opacity="0.9" transform="rotate(326.25)" />
+
+              <circle cx="0" cy="0" r="17.5" fill="url(#centerGrad)" stroke="#3e2723" stroke-width="1.5" />
+              <circle cx="-5" cy="-4" r="1.4" fill="#fbc02d" opacity="0.7"/>
+              <circle cx="5" cy="5" r="1.4" fill="#fbc02d" opacity="0.7"/>
+              <circle cx="6" cy="-3" r="1.2" fill="#ffd54f" opacity="0.8"/>
+              <circle cx="-4" cy="5" r="1.3" fill="#ffe082" opacity="0.7"/>
+              <circle cx="0" cy="0" r="1.6" fill="#ffd54f" opacity="0.9"/>
+            </g>
+          </g>
+        </defs>
+
+        <g class="flower-unit flower-u1">
+          <path d="M200,370 Q160,285 115,175" fill="none" stroke="url(#stemGrad)" stroke-width="7" stroke-linecap="round" />
+          <path d="M155,275 C130,270 120,250 135,245 C150,250 158,268 155,275 Z" fill="#7cb342" />
+          <g transform="translate(115, 175) scale(0.92) rotate(-16)">
+            <use href="#flowerHead" />
+          </g>
+        </g>
+
+        <g class="flower-unit flower-u2">
+          <path d="M200,370 Q178,255 148,120" fill="none" stroke="url(#stemGrad)" stroke-width="7.5" stroke-linecap="round" />
+          <path d="M178,240 C154,230 150,210 168,206 C182,212 184,232 178,240 Z" fill="#689f38" />
+          <g transform="translate(148, 120) scale(0.97) rotate(-8)">
+            <use href="#flowerHead" />
+          </g>
+        </g>
+
+        <g class="flower-unit flower-u6">
+          <path d="M200,370 Q188,270 176,170" fill="none" stroke="url(#stemGrad)" stroke-width="6.5" stroke-linecap="round" />
+          <g transform="translate(176, 170) scale(0.85) rotate(-5)">
+            <use href="#flowerHead" />
+          </g>
+        </g>
+
+        <g class="flower-unit flower-u5">
+          <path d="M200,370 Q240,285 285,175" fill="none" stroke="url(#stemGrad)" stroke-width="7" stroke-linecap="round" />
+          <path d="M245,275 C270,270 280,250 265,245 C250,250 242,268 245,275 Z" fill="#7cb342" />
+          <g transform="translate(285, 175) scale(0.92) rotate(16)">
+            <use href="#flowerHead" />
+          </g>
+        </g>
+
+        <g class="flower-unit flower-u4">
+          <path d="M200,370 Q222,255 252,120" fill="none" stroke="url(#stemGrad)" stroke-width="7.5" stroke-linecap="round" />
+          <path d="M222,240 C246,230 250,210 232,206 C218,212 216,232 222,240 Z" fill="#689f38" />
+          <g transform="translate(252, 120) scale(0.97) rotate(8)">
+            <use href="#flowerHead" />
+          </g>
+        </g>
+
+        <g class="flower-unit flower-u7">
+          <path d="M200,370 Q212,270 224,170" fill="none" stroke="url(#stemGrad)" stroke-width="6.5" stroke-linecap="round" />
+          <g transform="translate(224, 170) scale(0.85) rotate(5)">
+            <use href="#flowerHead" />
+          </g>
+        </g>
+
+        <g class="flower-unit flower-u3">
+          <path d="M200,370 Q200,225 200,75" fill="none" stroke="url(#stemGrad)" stroke-width="8" stroke-linecap="round" />
+          <path d="M198,225 C176,215 178,198 194,195 C208,200 206,220 198,225 Z" fill="#558b2f" />
+          <path d="M202,260 C222,250 220,234 206,230 C194,235 196,252 202,260 Z" fill="#689f38" />
+          <g transform="translate(200, 75) scale(1.18)">
+            <use href="#flowerHead" />
+          </g>
+        </g>
+
+        <g class="bouquet-wrap">
+          <polygon points="110,295 290,295 235,445 165,445" fill="url(#wrapGrad)" opacity="0.95" />
+          <path d="M110,295 Q200,335 290,295 L235,445 Q200,455 165,445 Z" fill="url(#wrapGrad)" stroke="#fcd34d" stroke-width="1.8" />
+          <polygon points="135,302 265,302 225,440 175,440" fill="#fff9c4" opacity="0.6" />
+          <path d="M145,305 Q200,325 255,305" fill="none" stroke="#fde047" stroke-width="2" opacity="0.7"/>
+          <ellipse cx="200" cy="370" rx="18" ry="13" fill="#f59e0b" stroke="#d97706" stroke-width="1" />
+          <circle cx="200" cy="370" r="7" fill="#b45309" opacity="0.5" />
+          <path d="M195,370 C165,348 135,355 148,382 C162,398 188,378 195,370 Z" fill="#f59e0b" stroke="#d97706" stroke-width="1" />
+          <path d="M205,370 C235,348 265,355 252,382 C238,398 212,378 205,370 Z" fill="#f59e0b" stroke="#d97706" stroke-width="1" />
+          <path d="M192,376 Q180,418 160,448" stroke="#d97706" stroke-width="5" fill="none" stroke-linecap="round" />
+          <path d="M208,376 Q220,418 240,448" stroke="#d97706" stroke-width="5" fill="none" stroke-linecap="round" />
+        </g>
+      </svg>
+    </div>
+
+    <div class="mt-2 mb-6 flex flex-col items-center gap-3">
+      <button id="toggleBouquetBtn" class="glow-btn px-8 py-3.5 rounded-full bg-gradient-to-r from-amber-400 via-amber-500 to-yellow-400 text-amber-950 font-bold tracking-wide text-base sm:text-lg flex items-center gap-3 shadow-lg cursor-pointer">
+        <svg id="flowerIconBtn" class="w-6 h-6 transition-transform duration-500" viewBox="0 0 24 24" fill="currentColor">
+          <circle cx="12" cy="12" r="3.5" fill="#451a03" />
+          <path d="M12 2C12.8 4 14.5 5.5 16.5 6C15 7.5 15 9.5 16 11C14 11.5 12.5 13 12 15C11.5 13 10 11.5 8 11C9 9.5 9 7.5 7.5 6C9.5 5.5 11.2 4 12 2Z" fill="#fef08a" />
+          <path d="M12 22C11.2 20 9.5 18.5 7.5 18C9 16.5 9 14.5 8 13C10 12.5 11.5 11 12 9C12.5 11 14 12.5 16 13C15 14.5 15 16.5 16.5 18C14.5 18.5 12.8 20 12 22Z" fill="#fde047" opacity="0.8" />
+        </svg>
+        <span id="btnText">Abrir Ramo &amp; Florecer</span>
+      </button>
+
+      <span class="text-xs text-amber-700/70 font-medium">Haz clic para florecer el ramo y comenzar la lluvia dorada</span>
+    </div>
+
+    <div id="dedicationCard" class="soft-card p-6 sm:p-8 w-full max-w-lg transition-all duration-1000 transform opacity-0 translate-y-6 scale-95 pointer-events-none hidden">
+      <div class="relative">
+        <span class="absolute -top-4 -left-2 text-4xl text-amber-300 select-none font-serif leading-none">“</span>
+        <p id="cardMessage" class="font-handwriting text-2xl sm:text-3xl text-amber-900 leading-snug px-4 pt-1 pb-3 text-center">
+          Flores amarillas para recordarte lo hermosa que es tu sonrisa y lo especial que eres en mi vida.
+        </p>
+      </div>
+    </div>
+
+    <div class="gallery modern-gallery" aria-label="Galería de flores">
+      <button class="gallery-card" type="button" data-title="Recuerdo brillante" data-text="Las mejores noches no necesitan estrellas cuando sobran buenas charlas y risas contigo." data-image="WhatsApp Image 2026-09-21 at 5.41.48 PM.jpeg">
+        <img src="WhatsApp Image 2026-09-21 at 5.41.48 PM.jpeg" alt="Flores amarillas en un campo" />
+      </button>
+      <button class="gallery-card" type="button" data-title="Luz suave" data-text="La belleza nunca hace ruido. A veces basta un instante sencillo, como una flor encontrando la forma exacta de iluminar tu día." data-image="WhatsApp Image 2026-09-21 at 5.42.11 PM.jpeg">
+        <img src="WhatsApp Image 2026-09-21 at 5.42.11 PM.jpeg" alt="Pequeña flor amarilla" />
+      </button>
+      <button class="gallery-card" type="button" data-title="Mi flor favorita" data-text="Te quiero regalar este detalle para recordarte que eres luz, ternura y alegría en mi vida." data-image="WhatsApp Image 2026-09-21 at 5.42.27 PM.jpeg">
+        <img src="WhatsApp Image 2026-09-21 at 5.42.27 PM.jpeg" alt="Ramo de flores amarillas" />
+      </button>
+    </div>
+  </main>
+
+  <div id="photoLightbox" class="photo-lightbox" aria-hidden="true">
+    <div class="photo-overlay" data-close="true"></div>
+    <div class="photo-panel" role="dialog" aria-modal="true" aria-labelledby="lightboxTitle">
+      <button class="photo-close" type="button" aria-label="Cerrar imagen">×</button>
+      <div class="photo-stars" id="photoStars"></div>
+      <img id="lightboxImage" src="" alt="Imagen ampliada" />
+      <div class="photo-copy">
+        <p class="photo-kicker">Momento especial</p>
+        <h3 id="lightboxTitle">Título</h3>
+        <p id="lightboxText">Texto</p>
+      </div>
+    </div>
+  </div>
+
+  <footer class="z-20 text-center text-xs text-amber-800/60 py-2">
+  </footer>
+
+  <audio id="bgMusic" preload="auto" loop hidden>
+    <source src="ENHYPEN (엔하이픈) 'XO (Only If You Say Yes)' Official MV - HYBE LABELS.mp3" type="audio/mpeg" />
+  </audio>
+
+  <script src="script.js"></script>
+</body>
+</html>
+
